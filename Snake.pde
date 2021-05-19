@@ -5,6 +5,11 @@ public class Snake{
   private PVector pos;
   private PVector vel;
   
+  /** sourabh boi**/
+  PImage spriteSheet;
+  PImage [] parts;
+  /** sourabh boi **/
+  
   private ArrayList<PVector> tail;
   private ArrayList<PVector> tailVel;
   
@@ -12,9 +17,12 @@ public class Snake{
     this.grid = grid;
     blocks_n = 0;
     pos = new PVector(1,1);
-    vel = new PVector(0,0);
+    vel = new PVector(1,0);
     tail = new ArrayList<PVector>();
     tailVel = new ArrayList<PVector>();
+    /** sourabh boi**/
+     parts = new PImage[16];
+     /** sourabh boi **/
   }
   
   public int getSize(){
@@ -36,9 +44,9 @@ public class Snake{
   public boolean isDead(){
     for(PVector p : tail){
       if(pos.dist(p)< grid-1){
-        blocks_n = 0;
-        tail = new ArrayList<PVector>();
-        tailVel = new ArrayList<PVector>();
+       //blocks_n = 0;
+       //tail = new ArrayList<PVector>();
+       //tailVel = new ArrayList<PVector>();
         return true;
       }
     }
@@ -98,20 +106,105 @@ public class Snake{
     }
   }
   
+  /** sourabh boi **/
+  void loadSprites()
+  {
+    int index = 0;
+    spriteSheet = loadImage("assets/snake.png");
+    for(int i=0;i<4;++i)
+      for(int j=0;j<4;++j)
+        parts[index++] = spriteSheet.get(j*grid,i*grid,grid,grid);
+  }
+  /** sourabh boi **/
+  
   public void drawSnake(){
     fill(255);
     for(int i =0; i<blocks_n; i++){
-      rect(tail.get(i).x,tail.get(i).y,grid,grid);
-      //if(tailVel.get(i).y!=0)
-      //  ellipse(tail.get(i).x+grid/2,tail.get(i).y+grid/2, grid/2, grid);
-      //else
-      //  ellipse(tail.get(i).x+grid/2,tail.get(i).y+grid/2, grid, grid/2);
+      if(tailVel.get(i).y>0){
+        //down
+        if(i==0 && PVector.angleBetween(tailVel.get(i),vel) != 0){
+          image(parts[10],tail.get(i).x,tail.get(i).y);
+        }else if(i<blocks_n-1 && PVector.angleBetween(tailVel.get(i+1),tailVel.get(i)) != 0){
+          if(tailVel.get(i+1).x > 0){
+            //down right  ----- right down
+            image(parts[10],tail.get(i).x,tail.get(i).y);
+          } else if(tailVel.get(i+1).x < 0){
+            //down left ----- left down
+            image(parts[9],tail.get(i).x,tail.get(i).y);
+          }
+        }else if(i==blocks_n-1){
+          image(parts[6],tail.get(i).x,tail.get(i).y);
+        }else{
+          image(parts[12],tail.get(i).x,tail.get(i).y);
+        }
+      }else if(tailVel.get(i).y<0){
+        //up
+        if(i==0 && PVector.angleBetween(tailVel.get(i),vel) != 0){
+          image(parts[8],tail.get(i).x,tail.get(i).y);
+        }else if(i<blocks_n-1 && PVector.angleBetween(tailVel.get(i+1),tailVel.get(i)) != 0){
+          if(tailVel.get(i+1).x > 0){
+            //up right --- right up
+            image(parts[11],tail.get(i).x,tail.get(i).y);
+          } else if(tailVel.get(i+1).x < 0){
+            //up left  --- left up
+            image(parts[8],tail.get(i).x,tail.get(i).y);
+          }
+        }else if(i==blocks_n-1){
+          image(parts[4],tail.get(i).x,tail.get(i).y);
+        }else{
+          image(parts[12],tail.get(i).x,tail.get(i).y);
+        }
+      }else if(tailVel.get(i).x>0){
+        //right
+        if(i==0 && PVector.angleBetween(tailVel.get(i),vel) != 0){
+          image(parts[9],tail.get(i).x,tail.get(i).y);          
+        }else if(i<blocks_n-1 && PVector.angleBetween(tailVel.get(i+1),tailVel.get(i)) != 0){
+          if(tailVel.get(i+1).y > 0){
+            // from right to down --- down right
+            image(parts[8],tail.get(i).x,tail.get(i).y);
+          } else if(tailVel.get(i+1).y < 0){
+            // from right to up  --- up right
+            image(parts[9],tail.get(i).x,tail.get(i).y);
+          }
+        }else if(i==blocks_n-1){
+          image(parts[5],tail.get(i).x,tail.get(i).y);
+        }else{
+          image(parts[13],tail.get(i).x,tail.get(i).y);
+        }
+      }else if(tailVel.get(i).x<0){
+        //left
+        if(i==0 && PVector.angleBetween(tailVel.get(i),vel) != 0){
+          image(parts[11],tail.get(i).x,tail.get(i).y);
+        }else if(i<blocks_n-1&& PVector.angleBetween(tailVel.get(i+1),tailVel.get(i)) != 0){
+          if(tailVel.get(i+1).y > 0){
+            // from left to down  -- down left
+            image(parts[11],tail.get(i).x,tail.get(i).y);
+          } else if(tailVel.get(i+1).y < 0){
+            // from left to up  -- up left
+            image(parts[10],tail.get(i).x,tail.get(i).y);
+          }
+        }else if(i==blocks_n-1){
+          image(parts[7],tail.get(i).x,tail.get(i).y);
+        }else{
+          image(parts[13],tail.get(i).x,tail.get(i).y);
+        }
+      }
     }
     fill(255);
-    rect(pos.x, pos.y, grid, grid);
-    //if(vel.y!=0)
-    //  ellipse(pos.x+grid/2,pos.y+grid/2, grid/2, grid);
-    //else
-    //  ellipse(pos.x+grid/2,pos.y+grid/2, grid, grid/2);
+    
+    if(vel.y==grid){
+      //down
+      image(parts[2],pos.x,pos.y);
+    } else if(vel.y==-grid){
+      //up
+      image(parts[0],pos.x,pos.y);
+    } else if(vel.x==grid){
+      //right
+      image(parts[1],pos.x,pos.y);
+    } else if(vel.x==-grid){
+      //left
+      image(parts[3],pos.x,pos.y);
+    }
+    
   }
 }

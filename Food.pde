@@ -21,7 +21,8 @@ public class Food{
   
   public void dispFood(){
     fill(255,0,0);
-    rect(loc.x,loc.y, grid, grid);
+    //rect(loc.x,loc.y, grid, grid);
+    image(s.parts[14],loc.x,loc.y);
   }
   
 }

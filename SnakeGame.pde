@@ -4,23 +4,29 @@ import processing.sound.*;
 //SoundFile death;
 //SoundFile gameOver;
 PFont pixelated;
-public int grid_size = 20;
+boolean paused;
+public int grid_size = 64;
 public int score = 0;
 public int lives = -1;
 Snake s;
 Food f;
 void setup(){
-  size(720,480);
+  size(1920,1080);
+  //fullScreen();
   //eat = new SoundFile(this,"eat.mp3");
   ////death = new SoundFile(this,"death.mp3");
   pixelated = createFont("assets/pixelated.ttf", 30);
   textFont(pixelated);
   s = new Snake(grid_size);
   f = new Food(grid_size);
+  s.loadSprites();
+  //s.setSize(s.getSize()+1);
   frameRate(10);
+  paused = false;
 }
 
 void draw(){
+  if(!paused){
   background(0);
   if(lives>0){
     fill(255);
@@ -35,11 +41,15 @@ void draw(){
     }
     f.dispFood();
     s.updateSnake();
+    s.drawSnake();
     if(s.isDead()){
       //score = 0;
+      s = new Snake(grid_size);
+      s.loadSprites();
+      //s.setSize(s.getSize()+1);
+      background(255,0,0);
       lives -= 1;
     }
-    s.drawSnake();
   }else if (lives == 0){
     textSize(25);
     text("SCORE: " + score,width/2-50,grid_size);
@@ -51,20 +61,21 @@ void draw(){
     text("SNAKE GAME",width/2-95,height/2 - 50);
     text("PRESS  'S'  TO START", width/2-110, height/2 + 25);
   }
+  }
 }
 
 void keyPressed() {
-   if (key == CODED) {
-    if (keyCode == UP) {
+   
+    if (keyCode == UP || key == 'w' || key == 'W') {
       s.move("up");
-    } else if (keyCode == DOWN) {
+    } else if (keyCode == DOWN || key == 's' || key == 'S') {
       s.move("down");
-    } else if(keyCode == LEFT){
+    } else if(keyCode == LEFT || key == 'a' || key == 'A'){
       s.move("left");
-    } else if (keyCode == RIGHT){
+    } else if (keyCode == RIGHT || key == 'd' || key == 'D'){
       s.move("right");
     }
-  }
+
   if((key == 'R' || key == 'r') 
     && lives == 0){
     score = 0;
@@ -74,4 +85,11 @@ void keyPressed() {
     && lives == -1){
     lives = 3;
   }
+  if(key == ' '){
+    paused = !paused;
+  }
+}
+
+void mousePressed(){
+  s.setSize(s.getSize()+1);
 }
